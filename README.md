@@ -1,4 +1,4 @@
-# cvpr_2023_submission
+# Co-Salient Object Detection with Uncertainty-aware Group Exchange-Masking
 
 Many thanks.
 
