@@ -2,7 +2,7 @@
 
 Many thanks.
 
-The results of our method on CoSal2015, CoSOD3k, CoCA, MSRC and iCoseg are available, and they can be download from the anonym link: https://anonymfile.com/z8A90/results.zip.
+The results of our method on CoSal2015, CoSOD3k, CoCA, MSRC and iCoseg are available, and they can be download from the link: https://pan.baidu.com/s/19Y__Sp7E2Za_tBZVenkftw and the passwd is 1310.
 
 The pretrained_model and weights can be download from the anoym link: https://anonymfile.com/BXaQp/weights.zip.
 
