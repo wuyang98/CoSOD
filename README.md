@@ -15,3 +15,25 @@ The pretrained_model and weights can be downloaded from the link: https://pan.ba
 Putting the pretrained_model into ./pretrained_model and weights files into ./result/models and run coseg_test.py can get the results.
 
 The link of the eval toolbox is: https://github.com/zzhanghub/eval-co-sod, we are very grateful for their contributions.
+
+### Installation Instructions
+    - We use Python 3.8
+    - Pytorch 2.1.1(CUDA 12.1 build).
+Please see `requirements.txt` for all the other requirments.
+
+### Train on coco-seg
+When we initialy train out method, we need firstly train vqvae and pixelcnn
+
+Train vqvae
+
+    python train_VQVAE.py
+Train pixelcnn
+
+    python train_pixelcnn.py
+Train our Method
+
+    python main.py --data_root /home/dell/Codes/IJCV/data/  --trainset coco-seg --n_embedding 128 --n_dim 384 --color_level 128 --linear_dim 128 --save_vqvae ./checkpoints/vqvae --save_gen_model ./checkpoints/vqvae
+### Test on CoCA, CoSOD3k, CoSal2015
+Test on CoCA
+
+    python coseg_test.py --n_embedding 128 --n_dim 384 --color_level 128 --linear_dim 128
