@@ -2,16 +2,20 @@ import os
 from PIL import Image
 import torch
 from torchvision import transforms
-from Models.ImageDepthNet import ImageDepthNet
+from Models.ImageDepthNet_VQVAE import ImageDepthNet, VQVAE, PixelCNNWithEmbedding
 import torch.nn.functional as F
 import time
 import matplotlib.pyplot as plt
 
+
 def test(args, model_path, datapath, save_root_path, group_size, img_size, img_dir_name):
-    net = ImageDepthNet(args)
+
+    vqvae = VQVAE(dim=args.n_dim, n_embedding=args.n_embedding)
+    pixelcnn = PixelCNNWithEmbedding(n_blocks=15, p=256, linear_dim=args.linear_dim, bn=True, color_level=args.color_level)
+
+    net = ImageDepthNet(args, vqvae, pixelcnn)
     net.cuda()
     net.eval()
-
 
     state_dict = torch.load(model_path)
     from collections import OrderedDict
@@ -58,11 +62,6 @@ def test(args, model_path, datapath, save_root_path, group_size, img_size, img_d
                         outputs_saliency, _ = outputs
                         mask_1_16, mask_1_8, mask_1_4, mask_1_1 = outputs_saliency
                         output_s_1 = F.sigmoid(mask_1_1)
-                        # out = output_s_1[0:1]
-                        # out = out.squeeze()
-                        # out = out.cpu().detach().numpy()
-                        # plt.imshow(out, cmap='jet')
-                        # plt.show()
                         cur_class_mask[(k * group_size): ((k + 1) * group_size)] = output_s_1.squeeze()
                 if rested != 0:
                     group_rgb_tmp_l = cur_class_rgb[-rested:]
@@ -74,7 +73,6 @@ def test(args, model_path, datapath, save_root_path, group_size, img_size, img_d
                     mask_1_16, mask_1_8, mask_1_4, mask_1_1 = outputs_saliency
                     output_s_1 = F.sigmoid(mask_1_1)
                     cur_class_mask[(divided * group_size):] = output_s_1[:rested].squeeze()
-
 
                 class_save_path = os.path.join(save_root_path[p], all_class[i])
                 if not os.path.exists(class_save_path):
@@ -92,8 +90,6 @@ def test(args, model_path, datapath, save_root_path, group_size, img_size, img_d
     print(time.localtime(time.time()))
 
 
-
-
 if __name__ == '__main__':
 
     os.environ['CUDA_VISIBLE_DEVICES'] = "0"
@@ -101,8 +97,8 @@ if __name__ == '__main__':
     
     # val_datapath = ["/data/chook_test/"]
     # save_root_path = ['./result/test/chook']
-    val_datapath = ["/data/MSRC/"]
-    save_root_path = ['./result/rebuttal/MSRC']
+    val_datapath = ["/home/dell/Codes/IJCV/data/CoCA"]
+    save_root_path = ['./result/rebuttal/CoCA']
     import argparse
 
     parser = argparse.ArgumentParser()
@@ -115,10 +111,13 @@ if __name__ == '__main__':
     parser.add_argument('--mode', default='test',  type=str, help='network input size')
     parser.add_argument('--pretrained_model', default='./pretrained_model/80.7_T2T_ViT_t_14.pth.tar', type=str,
                         help='load pretrained model')
+    # parser.add_argument('')
     parser.add_argument('--save_model_dir', default='checkpoint/', type=str, help='save model path')
-
+    parser.add_argument('--n_embedding', type=int, default=128, help='path for saving result.txt')
+    parser.add_argument('--n_dim', type=int, default=384, help='path for saving result.txt')
+    parser.add_argument('--color_level', type=int, default=128, help='path for saving result.txt')
+    parser.add_argument('--linear_dim', type=int, default=128, help='path for saving result.txt')
 
     args = parser.parse_args()
-
 
     test(args, model_path, val_datapath, save_root_path, 5, 224, 'image',)

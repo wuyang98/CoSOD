@@ -55,20 +55,21 @@ class ImageData(data.Dataset):
         contour_g_56 = []
         contour_g_112 = []
         contour_g_224 = []
+        # print(self.group)
         if random.random() <= 0.05:
             # 78
-            gitem = random.choice(range(78, self.group))
+            gitem = random.choice(range(30, self.group))
         else:
-            gitem = random.choice(range(78))
+            gitem = random.choice(range(30))
         
         mitem = random.sample(range(len(self.image_path[gitem])), self.group_size)
         # print(f'group_size:{self.group_size}')
         for i in range(self.group_size):
             image = Image.open(self.image_path[gitem][mitem[i]]).convert('RGB')
-            label = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'gt').replace('.jpg', '.png')).convert('L')
-            contour = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'contour').replace('.jpg', '.png')).convert('L')
-            # label = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'gt')).convert('L')
-            # contour = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'contour')).convert('L')
+            # label = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'gt').replace('.jpg', '.png')).convert('L')
+            # contour = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'contour').replace('.jpg', '.png')).convert('L')
+            label = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'gt')).convert('L')
+            contour = Image.open(self.image_path[gitem][mitem[i]].replace('image', 'contour')).convert('L')
 
             new_img = trans.Scale((224, 224))(image)
             new_label = trans.Scale((224, 224), interpolation=Image.NEAREST)(label)

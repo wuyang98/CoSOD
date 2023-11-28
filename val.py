@@ -6,6 +6,7 @@ from tools import calc_precision_and_jaccard
 import numpy as np
 import torch.nn.functional as F
 
+
 def validation(net, datapath, group_size=5, img_size=224, img_dir_name='image', gt_dir_name='gt',
                img_ext=['.jpg', '.jpg'], gt_ext=['.png', '.png']):
     img_transform = transforms.Compose([transforms.Resize((img_size, img_size)), transforms.ToTensor(),
@@ -17,7 +18,7 @@ def validation(net, datapath, group_size=5, img_size=224, img_dir_name='image', 
     with torch.no_grad():
         ave_p, ave_j = [], []
         for p in range(len(datapath)):
-            all_p, all_j,all_pre, all_recall = [], [], [], []
+            all_p, all_j, all_pre, all_recall = [], [], [], []
             all_class = os.listdir(os.path.join(datapath[p], img_dir_name))
             image_list, gt_list = list(), list()
             for s in range(len(all_class)):

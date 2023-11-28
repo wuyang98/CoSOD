@@ -7,6 +7,7 @@ from torch.autograd import Variable
 import numpy as np
 from torch.distributions import Normal, Independent, kl
 import torch
+
 from .pixelcnn import GatedBlock, GatedPixelCNN
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
@@ -140,6 +141,7 @@ class PixelCNNWithEmbedding(GatedPixelCNN):
         x = self.embedding(x)
         x = x.permute(0, 3, 1, 2).contiguous()
         return super().forward(x)
+
 
 class ImageDepthNet(nn.Module):
     def __init__(self, args, vqvae, gen_model):

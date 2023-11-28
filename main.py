@@ -48,8 +48,9 @@ if __name__ == "__main__":
     parser.add_argument('--gen_model_epoch', type=int, default=50, help='path for saving result.txt')
     parser.add_argument('--vqvae_epoch', type=int, default=100, help='path for saving result.txt')
     args = parser.parse_args()
-
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    torch.cuda.current_device()
+    torch.cuda._initialized = True
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     # num_gpus = torch.cuda.device_count()
     # print('+++++++++++++')
     # print(num_gpus)

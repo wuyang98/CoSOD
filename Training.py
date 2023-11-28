@@ -11,7 +11,7 @@ from tools import custom_print
 from dataset import get_loader
 import math
 # from Models.ImageDepthNet import ImageDepthNet
-from Models.ImageDepthNet import VQVAE, PixelCNNWithEmbedding, ImageDepthNet
+from Models.ImageDepthNet_VQVAE import VQVAE, PixelCNNWithEmbedding, ImageDepthNet
 import os
 import numpy as np
 from val import validation
@@ -118,85 +118,6 @@ def train_net(num_gpus, args):
     mp.spawn(main, nprocs=num_gpus, args=(num_gpus, args, ))
 
 
-def train_vqvae(model:VQVAE, dataloader, device='cuda', ckpt_path='./checkpoints/VQVAE/',
-                lr=1e-3, n_epochs=100, l_w_embedding=1, l_w_commitment=0.25):
-    print('train VQVAE!!!')
-    model.to(device)
-    model.train()
-    optimizer = torch.optim.Adam(model.parameters(), lr)
-    mse_loss = nn.MSELoss()
-    tic = time.time()
-    best_loss = 99999999999999999999.0
-
-    for e in range(n_epochs):
-        total_loss = 0
-
-        for i, data_batch in enumerate(dataloader):
-            x, _, _, _, _, _, _, _, _, _, _ = data_batch
-            current_batch_size = x.shape[0]
-            x = x.to(device)
-
-            x_hat, ze, zq = model(x)
-            l_reconstruct = mse_loss(x, x_hat)
-            l_embedding = mse_loss(ze.detach(), zq)
-            l_commitment = mse_loss(ze, zq.detach())
-            loss = l_reconstruct + \
-                l_w_embedding*l_embedding + l_w_commitment*l_commitment
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item() * current_batch_size
-        total_loss /= len(dataloader.dataset)
-        toc = time.time()
-        last_path = os.path.join(ckpt_path, 'last_vqvae.pth')
-        best_path = os.path.join(ckpt_path, 'checkpoints/VQVAE/best_vqvae.pth')
-        torch.save(model.state_dict(), last_path)
-        if total_loss < best_loss:
-            torch.save(model.state_dict(), best_path)
-        print(f'epoch {e} loss: {total_loss} elapsed {(toc - tic):.2f}s')
-        print('Done!!!')
-
-
-def train_generative_model(vqvae: VQVAE, model, dataloader, device='cuda', ckpt_path='./checkpoints/VQVAE/gen_model5.pth',
-                             n_epochs=50):
-    print('train gen_model')
-    vqvae.to(device)
-    vqvae.eval()
-    model.to(device)
-    model.train()
-    optimizer = torch.optim.Adam(model.parameters(), 1e-3)
-    loss_fn = nn.CrossEntropyLoss()
-    tic = time.time()
-    best_loss = 99999999999.0
-    for e in range(n_epochs):
-        print(f'epoch:{e}')
-        total_loss = 0
-        for i, data_batch in enumerate(dataloader):
-            x, _, _, _, _, _, _, _, _, _, _ = data_batch
-            current_batch_size = x.shape[0]
-            # print(f'current_batch_size:{current_batch_size}')
-            with torch.no_grad():
-                x = x.to(device)
-                x = vqvae.encode(x)
-
-            predict_x = model(x)
-            loss = loss_fn(predict_x, x)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item() * current_batch_size
-        total_loss /= len(dataloader.dataset)
-        toc = time.time()
-        last_path = os.path.join(ckpt_path, 'last_gen.pth')
-        best_path = os.path.join(ckpt_path, 'best_gen.pth')
-        torch.save(model.state_dict(), last_path)
-        if total_loss < best_loss:
-            torch.save(model.state_dict(), best_path)
-        print(f'epoch {e} loss: {total_loss} elapsed {(toc - tic):.2f}s')
-    print('Done')
-
-
 def main(rank, num_gpus, args):
 
     rank += 2
@@ -219,40 +140,20 @@ def main(rank, num_gpus, args):
 
     cudnn.benchmark = True
 
-    # dist.init_process_group(backend='nccl', init_method=args.init_method, world_size=num_gpus, rank=local_rank)
-    # print(local_rank)
-    # print(rank)
-    # torch.cuda.set_device(rank)
-    # torch.cuda.set_device(2)
     vqvae = VQVAE(dim=args.n_dim, n_embedding=args.n_embedding)
     pixelcnn = PixelCNNWithEmbedding(n_blocks=15, p=256, linear_dim=args.linear_dim, bn=True, color_level=args.color_level)
 
     train_dataset = get_loader(args.trainset, args.data_root, args.img_size, group_size=args.group_size)
 
-    # sampler = torch.utils.data.distributed.DistributedSampler(
-    #     train_dataset,
-    #     num_replicas=num_gpus,
-    #     rank=rank,
-    # )
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, num_workers=6,
                                                pin_memory=True,
                                                drop_last=True,
                                                collate_fn=collate,
                                                )
-    # train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, num_workers=6,
-    #                                            pin_memory=True,
-    #                                            sampler=sampler,
-    #                                            drop_last=True,
-    #                                            collate_fn=collate,
-    #                                            )
     vqvae_path = os.path.join(args.save_vqvae, 'best_vqvae.pth')
     gen_path = os.path.join(args.save_gen_model, 'best_gen.pth')
-    # vqvae.load_state_dict(torch.load(vqvae_path))
-    # train_vqvae(vqvae, train_loader, ckpt_path=args.save_vqvae, n_epochs=args.vqvae_epoch)
-    vqvae.load_state_dict(torch.load(vqvae_path))
-    # train_generative_model(vqvae, pixelcnn, train_loader, ckpt_path=args.save_gen_model, n_epochs=args.gen_model_epoch)
-    # vqvae.load_state_dict(torch.load('./checkpoints/VQVAE/vqvae.pth'))
-    pixelcnn.load_state_dict(torch.load(gen_path))
+    vqvae.load_state_dict(torch.load(vqvae_path, map_location=torch.device('cpu')))
+    pixelcnn.load_state_dict(torch.load(gen_path, map_location=torch.device('cpu')))
     net = ImageDepthNet(args, vqvae, pixelcnn)
     net.train()
     net.cuda()
@@ -300,11 +201,6 @@ def main(rank, num_gpus, args):
             images, label_224, label_14, label_28, label_56, label_112, \
             contour_224, contour_14, contour_28, contour_56, contour_112 = data_batch
 
-            #
-            # images, label_224, contour_224 = Variable(images.cuda(local_rank, non_blocking=True)), \
-            #                             Variable(label_224.cuda(local_rank, non_blocking=True)),  \
-            #                             Variable(contour_224.cuda(local_rank, non_blocking=True))
-
             images, label_224, contour_224 = Variable(images.cuda(0, non_blocking=True)), \
                                         Variable(label_224.cuda(0, non_blocking=True)),  \
                                         Variable(contour_224.cuda(0, non_blocking=True))
@@ -326,7 +222,7 @@ def main(rank, num_gpus, args):
             loss4 = criterion(mask_1_8, label_28)
             loss3 = criterion(mask_1_4, label_56)
             loss1 = criterion(mask_1_1, label_224)
-            loss11= criterion1(mask_1_1, label_224)
+            loss11 = criterion1(mask_1_1, label_224)
 
             # contour loss
             c_loss5 = criterion(cont_1_16, contour_14)
@@ -371,10 +267,6 @@ def main(rank, num_gpus, args):
                 custom_print('-' * 100, log_txt_file, 'a+')
                 custom_print(datetime.datetime.now().strftime('%F %T') + ' CoCA     p: [%.4f], j: [%.4f]' %
                              (ave_p[0], ave_j[0]), log_txt_file, 'a+')
-                # custom_print(datetime.datetime.now().strftime('%F %T') + ' Cosal15  p: [%.4f], j: [%.4f]' %
-                #              (ave_p[1], ave_j[1]), log_txt_file, 'a+')
-                # custom_print(datetime.datetime.now().strftime('%F %T') + ' CoSOD3k  p: [%.4f], j: [%.4f]' %
-                #              (ave_p[2], ave_j[2]), log_txt_file, 'a+')
                 custom_print('-' * 100, log_txt_file, 'a+')
                 net.train()
 
