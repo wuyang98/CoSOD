@@ -40,6 +40,7 @@ Test on CoCA
 
 ### PS
 If you find our work helpful, you can cite our paper
+``` python
     @inproceedings{wu2023co,
       title={Co-Salient Object Detection With Uncertainty-Aware Group Exchange-Masking},
       author={Wu, Yang and Song, Huihui and Liu, Bo and Zhang, Kaihua and Liu, Dong},
@@ -53,3 +54,4 @@ If you find our work helpful, you can cite our paper
       journal={arXiv preprint arXiv:2310.10264},
       year={2023}
     }
+```
