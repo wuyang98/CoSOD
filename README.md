@@ -1,6 +1,6 @@
 # Towards Open-World Co-Salient Object Detection with Generative Uncertainty-aware Group Selective Exchange-Masking
 
-Many thanks.
+Thank you very much for your interest in our work.
 
 The OWCoSOD datasets (OWCoSal, OWCoSOD, OWCoCA) can be downloaded from the link https://pan.baidu.com/s/11MKqPIRP58p8lvz7x9AF2Q, and the password is 1310.
 
@@ -37,3 +37,5 @@ Train our Method
 Test on CoCA
 
     python coseg_test.py --n_embedding 128 --n_dim 384 --color_level 128 --linear_dim 128
+
+### PS
