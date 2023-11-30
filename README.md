@@ -40,16 +40,16 @@ Test on CoCA
 
 ### PS
 If you find our work helpful, you can cite our paper
-@inproceedings{wu2023co,
-  title={Co-Salient Object Detection With Uncertainty-Aware Group Exchange-Masking},
-  author={Wu, Yang and Song, Huihui and Liu, Bo and Zhang, Kaihua and Liu, Dong},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={19639--19648},
-  year={2023}
-}
-@article{wu2023towards,
-  title={Towards Open-World Co-Salient Object Detection with Generative Uncertainty-aware Group Selective Exchange-Masking},
-  author={Wu, Yang and Hu, Shenglong and Song, Huihui and Zhang, Kaihua and Liu, Bo and Liu, Dong},
-  journal={arXiv preprint arXiv:2310.10264},
-  year={2023}
-}
+    @inproceedings{wu2023co,
+      title={Co-Salient Object Detection With Uncertainty-Aware Group Exchange-Masking},
+      author={Wu, Yang and Song, Huihui and Liu, Bo and Zhang, Kaihua and Liu, Dong},
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+      pages={19639--19648},
+      year={2023}
+    }
+    @article{wu2023towards,
+      title={Towards Open-World Co-Salient Object Detection with Generative Uncertainty-aware Group Selective Exchange-Masking},
+      author={Wu, Yang and Hu, Shenglong and Song, Huihui and Zhang, Kaihua and Liu, Bo and Liu, Dong},
+      journal={arXiv preprint arXiv:2310.10264},
+      year={2023}
+    }
