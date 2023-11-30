@@ -19,10 +19,10 @@ The link of the eval toolbox is: https://github.com/zzhanghub/eval-co-sod, we ar
 ### Installation Instructions
     - We use Python 3.8
     - Pytorch 2.1.1(CUDA 12.1 build).
-Please see `requirements.txt` for all the other requirments.
+Please see `requirements.txt` for all the other requirements.
 
 ### Train on coco-seg
-When we initialy train out method, we need firstly train vqvae and pixelcnn
+When you initially train the method, you need firstly train vqvae and pixelcnn
 
 Train vqvae
 
@@ -39,3 +39,17 @@ Test on CoCA
     python coseg_test.py --n_embedding 128 --n_dim 384 --color_level 128 --linear_dim 128
 
 ### PS
+If you find our work helpful, you can cite our paper
+@inproceedings{wu2023co,
+  title={Co-Salient Object Detection With Uncertainty-Aware Group Exchange-Masking},
+  author={Wu, Yang and Song, Huihui and Liu, Bo and Zhang, Kaihua and Liu, Dong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={19639--19648},
+  year={2023}
+}
+@article{wu2023towards,
+  title={Towards Open-World Co-Salient Object Detection with Generative Uncertainty-aware Group Selective Exchange-Masking},
+  author={Wu, Yang and Hu, Shenglong and Song, Huihui and Zhang, Kaihua and Liu, Bo and Liu, Dong},
+  journal={arXiv preprint arXiv:2310.10264},
+  year={2023}
+}
