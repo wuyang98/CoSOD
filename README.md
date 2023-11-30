@@ -17,7 +17,7 @@ Putting the pretrained_model into ./pretrained_model and weights files into ./re
 The link of the eval toolbox is: https://github.com/zzhanghub/eval-co-sod, we are very grateful for their contributions.
 
 ### Installation Instructions
-    - We use Python 3.8
+    - Python 3.8
     - Pytorch 2.1.1(CUDA 12.1 build).
 Please see `requirements.txt` for all the other requirements.
 
