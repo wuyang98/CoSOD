@@ -1,4 +1,4 @@
-# Towards Open-World Co-Salient Object Detection with Generative Uncertainty-aware Group Selective Exchange-Masking
+# Generative Uncertainty-aware Group Selective Exchange-Masking for Robust Co-Salient Object Detection
 
 Thank you very much for your interest in our work.
 
