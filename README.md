@@ -3,7 +3,8 @@
 Thank you very much for your interest in our work.
 
 The OWCoSOD datasets (OWCoSal, OWCoSOD, OWCoCA) can be downloaded from the link \
-https://pan.baidu.com/s/11MKqPIRP58p8lvz7x9AF2Q, and the password is 1310.
+https://pan.baidu.com/s/11MKqPIRP58p8lvz7x9AF2Q, and the password is 1310. or \
+https://drive.google.com/file/d/1UmSCMx4FHoIIBhjTmCLgpT64IpBS5_9S/view?usp=sharing
 
 The results of our method on OWCoSal, OWCoSOD, OWCoCA can be downloaded from \
 https://pan.baidu.com/s/1Yw3jN_cxkRgR47PSiIclPw, and the password is 1310.
